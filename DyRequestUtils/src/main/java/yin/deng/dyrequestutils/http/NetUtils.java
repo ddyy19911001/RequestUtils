@@ -1,4 +1,4 @@
-package yin.deng.dyutils.utils;
+package yin.deng.dyrequestutils.http;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
