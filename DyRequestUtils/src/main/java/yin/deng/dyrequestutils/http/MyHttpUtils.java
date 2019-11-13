@@ -38,6 +38,21 @@ public class MyHttpUtils {
     public interface OnGetInfoListener{
         void onInfoGet(String requestUrl,Object info);
     }
+
+    public MyHttpUtils(Application context,OnOkHttpInitListener listener) {
+        this.context=context;
+        mGson=new Gson();
+        if(listener==null){
+            throw new IllegalArgumentException("请初始化OkHttpUtil,自定义设置参数！");
+        }else{
+            listener.onOkHttpInit();
+        }
+    }
+
+    public interface OnOkHttpInitListener{
+        void onOkHttpInit();
+    }
+
     public MyHttpUtils(Application context) {
         this.context=context;
         mGson=new Gson();
@@ -53,7 +68,7 @@ public class MyHttpUtils {
                 .setIsGzip(false)//Gzip压缩，需要服务端支持
                 .setShowHttpLog(true)//显示请求日志
                 .setShowLifecycleLog(false)//显示Activity销毁日志
-                .setRetryOnConnectionFailure(false)//失败后不自动重连
+                .setRetryOnConnectionFailure(true)//失败后不自动重连
                 .setCachedDir(new File(cacheDir))//设置缓存目录
                 .setDownloadFileDir(downloadFileDir)//文件下载保存目录
                 .setResponseEncoding(Encoding.UTF_8)//设置全局的服务器响应编码
@@ -80,7 +95,7 @@ public class MyHttpUtils {
                 .setIsGzip(false)//Gzip压缩，需要服务端支持
                 .setShowHttpLog(needLog)//显示请求日志
                 .setShowLifecycleLog(false)//显示Activity销毁日志
-                .setRetryOnConnectionFailure(false)//失败后不自动重连
+                .setRetryOnConnectionFailure(true)//失败后不自动重连
                 .setCachedDir(new File(cacheDir))//设置缓存目录
                 .setDownloadFileDir(downLoadDir)//文件下载保存目录
                 .setResponseEncoding(Encoding.UTF_8)//设置全局的服务器响应编码

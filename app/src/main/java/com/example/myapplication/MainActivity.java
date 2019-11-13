@@ -4,7 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.google.gson.JsonObject;
+import com.okhttplib.HttpInfo;
+import com.okhttplib.callback.Callback;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,5 +22,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MyHttpUtils httpUtils=new MyHttpUtils(getApplication());
+        httpUtils.sendMsgGet("url", new JsonObject(), new Callback() {
+            @Override
+            public void onSuccess(HttpInfo info) throws IOException {
+
+            }
+
+            @Override
+            public void onFailure(HttpInfo info) throws IOException {
+
+            }
+        });
     }
 }
