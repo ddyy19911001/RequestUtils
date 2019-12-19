@@ -21,8 +21,7 @@ import java.util.Locale;
  * http://blog.csdn.net/finddreams
  */
 public class LogUtils {
-
-    public static String customTagPrefix = "finddreams"; // 自定义Tag的前缀，可以是作者名
+    public static String customTagPrefix = "DYLog"; // 自定义Tag的前缀，可以是作者名
     private static final boolean isSaveLog = false; // 是否把保存日志到SD卡中
     public static final String ROOT = Environment.getExternalStorageDirectory()
             .getPath() + "/finddreams/"; // SD卡中的根目录
@@ -46,7 +45,7 @@ public class LogUtils {
     public static int typeW = 4;
     public static int typeWtf = 5;
     private static String generateTag(StackTraceElement caller) {
-        String tag = "%s.%s(输出Line:%d)"; // 占位符
+        String tag = "%s.%s(Line:%d)"; // 占位符
         String callerClazzName = caller.getClassName(); // 获取到类名
         callerClazzName = callerClazzName.substring(callerClazzName
                 .lastIndexOf(".") + 1);
@@ -65,7 +64,7 @@ public class LogUtils {
         if (tag == null || tag.length() == 0
                 || msg == null || msg.length() == 0)
             return;
-
+        msg="---------------------------------------------------------\r\n"+msg;
         int segmentSize = 3 * 1024;
         long length = msg.length();
         if (length <= segmentSize ) {// 长度小于等于限制直接打印
@@ -76,7 +75,7 @@ public class LogUtils {
             }else if(type==typeV){
                 Log.v(tag, msg);
             }else if(type==typeI){
-                Log.v(tag, msg);
+                Log.i(tag, msg);
             }else if(type==typeW){
                 Log.w(tag, msg);
             }else{
@@ -93,7 +92,7 @@ public class LogUtils {
                 }else if(type==typeV){
                     Log.v(tag, msg);
                 }else if(type==typeI){
-                    Log.v(tag, msg);
+                    Log.i(tag, msg);
                 }else if(type==typeW){
                     Log.w(tag, msg);
                 }else{
@@ -107,7 +106,7 @@ public class LogUtils {
             }else if(type==typeV){
                 Log.v(tag, msg);
             }else if(type==typeI){
-                Log.v(tag, msg);
+                Log.i(tag, msg);
             }else if(type==typeW){
                 Log.w(tag, msg);
             }else{
@@ -384,7 +383,7 @@ public class LogUtils {
 
     /**
      * 根据文件路径 递归创建文件
-     * 
+     *
      * @param file
      */
     public static void createDipPath(String file) {
@@ -422,8 +421,8 @@ public class LogUtils {
         }
     }
 
-    private static final ThreadLocal<ReusableFormatter> thread_local_formatter 
-    = new ThreadLocal<ReusableFormatter>() {
+    private static final ThreadLocal<ReusableFormatter> thread_local_formatter
+            = new ThreadLocal<ReusableFormatter>() {
         protected ReusableFormatter initialValue() {
             return new ReusableFormatter();
         }

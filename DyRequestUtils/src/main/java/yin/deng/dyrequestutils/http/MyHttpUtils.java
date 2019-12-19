@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class MyHttpUtils {
@@ -713,10 +715,22 @@ public class MyHttpUtils {
 
 
     public void initSucessLog(HttpInfo info,boolean isSucess) {
-        if(isSucess) {
-            LogUtils.i("请求结果（成功）：\n请求地址："+info.getUrl()+"\n请求参数："+info.getParamJson()+"\n响应结果:"+info.getRetDetail());
+        HashMap<String,String> maps= (HashMap<String, String>) info.getParams();
+        StringBuffer stringBuffer=new StringBuffer();
+        if(maps!=null&&maps.size()>0){
+            Set<Map.Entry<String, String>> ms = maps.entrySet();
+            for (Map.Entry entry : ms) {
+                stringBuffer.append(entry.getKey());
+                stringBuffer.append("=");
+                stringBuffer.append(entry.getValue());
+            }
         }else{
-            LogUtils.e("请求结果（失败）：\n请求地址："+info.getUrl()+"\n请求参数："+info.getParamJson()+"\n错误原因："+info.getRetDetail());
+            stringBuffer.append("null");
+        }
+        if(isSucess) {
+            LogUtils.i("请求结果（成功）：\n请求地址："+info.getUrl()+"\n请求参数："+(stringBuffer.toString().equals("null")?"":stringBuffer.toString())+(info.getParamJson()==null?"":info.getParamJson())+"\n响应结果:"+info.getRetDetail());
+        }else{
+            LogUtils.e("请求结果（失败）：\n请求地址："+info.getUrl()+"\n请求参数："+(stringBuffer.toString().equals("null")?"":stringBuffer.toString())+(info.getParamJson()==null?"":info.getParamJson())+"\n错误原因："+info.getRetDetail());
         }
     }
 
