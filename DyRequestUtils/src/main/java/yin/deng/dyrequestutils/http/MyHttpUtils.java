@@ -114,7 +114,29 @@ public class MyHttpUtils {
     }
 
 
+    /**
+     * json格式的head
+     * @param requestUrl
+     * @param params  json参数
+     * @return
+     */
+    public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, JsonObject params){
+        HttpInfo.Builder builder=null;
+        if(params!=null) {
+            builder= getHttpInfoBuilder(requestUrl, params, getJsonHeadParams());
+        }else{
+            builder=getHttpInfoBuilder(requestUrl, new JsonObject(), getJsonHeadParams());
+        }
+        return builder;
+    }
 
+
+    /**
+     * hashmap格式参数
+     * @param requestUrl
+     * @param params
+     * @return
+     */
     public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, HashMap<String,String> params){
         HttpInfo.Builder builder=null;
         if(params!=null) {
@@ -125,6 +147,13 @@ public class MyHttpUtils {
         return builder;
     }
 
+    /**
+     * hashmap格式参数
+     * @param requestUrl
+     * @param map
+     * @param params
+     * @return
+     */
     public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, HashMap<String,String> map, List<HeaderParam> params){
         if(map==null){
             map=new HashMap();
@@ -142,6 +171,59 @@ public class MyHttpUtils {
             }
         }
         return builder;
+    }
+
+    public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, JsonObject jsonObject, List<HeaderParam> params){
+        if(jsonObject==null){
+            jsonObject=new JsonObject();
+        }
+        HttpInfo.Builder builder= HttpInfo.Builder();
+        builder.setUrl(requestUrl)
+                .addParamJson(mGson.toJson(jsonObject))
+                .setNeedResponse(false);//设置返回结果为Response
+        if(params!=null){
+            for(int i=0;i<params.size();i++){
+                if(params.get(i).getValue()==null){
+                    continue;
+                }
+                builder.addHead(params.get(i).getKey(),params.get(i).getValue());
+            }
+        }
+        return builder;
+    }
+
+    public void sendMsgGet(final String requestUrl,JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+        if(!NetUtils.isNetworkConnected(context)){
+            if(noNetRequestListener!=null){
+                noNetRequestListener.onNoNet(requestUrl);
+                LogUtils.e("网络中断，无法请求数据");
+            }
+            return;
+        }
+        if(object==null){
+            object=new JsonObject();
+        }
+        HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object).build();
+        OkHttpUtil.getDefault(this)//绑定生命周期
+                .doGetAsync(requestInfo, new Callback() {
+                    @Override
+                    public void onSuccess(HttpInfo info) throws IOException {
+                        String data=info.getRetDetail();
+                        initSucessLog(info,true);
+                        Object obj= mGson.fromJson(data,x);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpInfo info) throws IOException {
+                        initSucessLog(info,false);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onFailed(requestUrl,info);
+                        }
+                    }
+                });
     }
 
 
@@ -233,6 +315,37 @@ public class MyHttpUtils {
                 .doGetAsync(requestInfo,callback);
     }
 
+
+    public void sendMsgPost(final String requestUrl, JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+        if(!NetUtils.isNetworkConnected(context)){
+            if(noNetRequestListener!=null){
+                noNetRequestListener.onNoNet(requestUrl);
+                LogUtils.e("网络中断，无法请求数据");
+            }
+            return;
+        }
+        HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object).build();
+        OkHttpUtil.getDefault(this)//绑定生命周期
+                .doPostAsync(requestInfo, new Callback() {
+                    @Override
+                    public void onSuccess(HttpInfo info) throws IOException {
+                        String data=info.getRetDetail();
+                        initSucessLog(info,true);
+                        Object obj= mGson.fromJson(data,x);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpInfo info) throws IOException {
+                        initSucessLog(info,false);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onFailed(requestUrl,info);
+                        }
+                    }
+                });
+    }
 
     //"Content-Type","application/json"
     public void sendMsgPost(final String requestUrl, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
@@ -742,6 +855,15 @@ public class MyHttpUtils {
         HeaderParam headerParam=new HeaderParam();
         headerParam.setKey("Content-Type");
         headerParam.setValue("application/x-www-form-urlencoded");
+        params.add(headerParam);
+        return params;
+    }
+
+    public List<HeaderParam> getJsonHeadParams(){
+        List<HeaderParam> params=new ArrayList<>();
+        HeaderParam headerParam=new HeaderParam();
+        headerParam.setKey("Content-Type");
+        headerParam.setValue("application/json");
         params.add(headerParam);
         return params;
     }
