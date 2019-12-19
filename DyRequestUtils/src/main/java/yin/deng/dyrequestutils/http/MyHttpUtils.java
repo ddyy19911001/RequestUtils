@@ -40,6 +40,7 @@ public class MyHttpUtils {
     }
     public interface OnGetInfoListener{
         void onInfoGet(String requestUrl,Object info);
+        void onFailed(String requestUrl,HttpInfo info);
     }
 
     public MyHttpUtils(Application context,OnOkHttpInitListener listener) {
@@ -166,6 +167,9 @@ public class MyHttpUtils {
                     @Override
                     public void onFailure(HttpInfo info) throws IOException {
                         initSucessLog(info,false);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onFailed(requestUrl,info);
+                        }
                     }
                 });
     }
@@ -194,6 +198,9 @@ public class MyHttpUtils {
                     @Override
                     public void onFailure(HttpInfo info) throws IOException {
                         initSucessLog(info,false);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onFailed(requestUrl,info);
+                        }
                     }
                 });
     }
@@ -250,6 +257,9 @@ public class MyHttpUtils {
                     @Override
                     public void onFailure(HttpInfo info) throws IOException {
                         initSucessLog(info,false);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onFailed(requestUrl,info);
+                        }
                     }
                 });
     }
@@ -278,6 +288,9 @@ public class MyHttpUtils {
                     @Override
                     public void onFailure(HttpInfo info) throws IOException {
                         initSucessLog(info,false);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onFailed(requestUrl,info);
+                        }
                     }
                 });
     }
