@@ -3,6 +3,7 @@ package yin.deng.dyrequestutils.http;
 import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -21,6 +22,8 @@ import com.okhttplib.cookie.persistence.SharedPrefsCookiePersistor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -107,10 +110,25 @@ public class MyHttpUtils {
                 .build();
     }
 
-    public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, JsonObject jsonObject, List<HeaderParam> params){
+
+
+    public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, HashMap<String,String> params){
+        HttpInfo.Builder builder=null;
+        if(params!=null) {
+           builder= getHttpInfoBuilder(requestUrl, params, getDefualtHeadParams());
+        }else{
+            builder=getHttpInfoBuilder(requestUrl, new HashMap<String,String>(), getDefualtHeadParams());
+        }
+        return builder;
+    }
+
+    public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, HashMap<String,String> map, List<HeaderParam> params){
+        if(map==null){
+            map=new HashMap();
+        }
         HttpInfo.Builder builder= HttpInfo.Builder();
-        builder .setUrl(requestUrl)
-                .addParamJson(mGson.toJson(jsonObject))
+        builder.setUrl(requestUrl)
+                .addParams(map)
                 .setNeedResponse(false);//设置返回结果为Response
         if(params!=null){
             for(int i=0;i<params.size();i++){
@@ -123,25 +141,14 @@ public class MyHttpUtils {
         return builder;
     }
 
-    public HttpInfo.Builder getHttpInfoBuilder(String requestUrl, JsonObject jsonObject){
-        HttpInfo.Builder builder= HttpInfo.Builder();
-        builder .setUrl(requestUrl)
-                .addParamJson(mGson.toJson(jsonObject))
-                .setNeedResponse(false);//设置返回结果为Response
-        return builder;
-    }
 
-
-    public void sendMsgGet(final String requestUrl, JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public void sendMsgGet(final String requestUrl, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
@@ -163,16 +170,13 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgGet(final String requestUrl, List<HeaderParam> params, JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public void sendMsgGet(final String requestUrl, List<HeaderParam> params, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object,params).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
@@ -194,32 +198,26 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgGet(String requestUrl, JsonObject object,Callback callback){
+    public void sendMsgGet(String requestUrl, HashMap<String,String> object,Callback callback){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
                 .doGetAsync(requestInfo,callback);
     }
 
-    public void sendMsgGet(String requestUrl,List<HeaderParam> params, JsonObject object,Callback callback){
+    public void sendMsgGet(String requestUrl,List<HeaderParam> params, HashMap<String,String> object,Callback callback){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object,params).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
@@ -228,16 +226,13 @@ public class MyHttpUtils {
 
 
     //"Content-Type","application/json"
-    public void sendMsgPost(final String requestUrl, JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public void sendMsgPost(final String requestUrl, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
@@ -259,16 +254,13 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgPost(final String requestUrl, List<HeaderParam> params, JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public void sendMsgPost(final String requestUrl, List<HeaderParam> params, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object,params).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
@@ -290,16 +282,13 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgPost(String requestUrl, JsonObject object,Callback callback){
+    public void sendMsgPost(String requestUrl, HashMap<String,String> object,Callback callback){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
@@ -307,16 +296,13 @@ public class MyHttpUtils {
     }
 
 
-    public void sendMsgPost(String requestUrl,List<HeaderParam> params, JsonObject object,Callback callback){
+    public void sendMsgPost(String requestUrl,List<HeaderParam> params, HashMap<String,String> object,Callback callback){
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
                 LogUtils.e("网络中断，无法请求数据");
             }
             return;
-        }
-        if(object==null){
-            object=new JsonObject();
         }
         HttpInfo requestInfo= getHttpInfoBuilder(requestUrl,object,params).build();
         OkHttpUtil.getDefault(this)//绑定生命周期
@@ -721,6 +707,17 @@ public class MyHttpUtils {
         }
     }
 
+
+
+
+    public List<HeaderParam> getDefualtHeadParams(){
+        List<HeaderParam> params=new ArrayList<>();
+        HeaderParam headerParam=new HeaderParam();
+        headerParam.setKey("Content-Type");
+        headerParam.setValue("application/x-www-form-urlencoded");
+        params.add(headerParam);
+        return params;
+    }
 
 
 }
