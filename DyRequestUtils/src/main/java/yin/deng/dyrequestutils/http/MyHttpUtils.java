@@ -347,6 +347,38 @@ public class MyHttpUtils {
                 });
     }
 
+    public void sendMsgPost(final String requestUrl,List<HeaderParam> params ,JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+        if(!NetUtils.isNetworkConnected(context)){
+            if(noNetRequestListener!=null){
+                noNetRequestListener.onNoNet(requestUrl);
+                LogUtils.e("网络中断，无法请求数据");
+            }
+            return;
+        }
+        HttpInfo requestInfo= getHttpInfoBuilder(requestUrl, object, params).build();
+        OkHttpUtil.getDefault(this)//绑定生命周期
+                .doPostAsync(requestInfo, new Callback() {
+                    @Override
+                    public void onSuccess(HttpInfo info) throws IOException {
+                        String data=info.getRetDetail();
+                        initSucessLog(info,true);
+                        Object obj= mGson.fromJson(data,x);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpInfo info) throws IOException {
+                        initSucessLog(info,false);
+                        if(onGetInfoListener!=null){
+                            onGetInfoListener.onFailed(requestUrl,info);
+                        }
+                    }
+                });
+    }
+
+
     //"Content-Type","application/json"
     public void sendMsgPost(final String requestUrl, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
         if(!NetUtils.isNetworkConnected(context)){
