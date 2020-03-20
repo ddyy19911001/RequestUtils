@@ -40,8 +40,8 @@ public class MyHttpUtils {
     public interface OnNoNetRequestListener{
         void onNoNet(String requestUrl);
     }
-    public interface OnGetInfoListener{
-        void onInfoGet(String requestUrl,Object info);
+    public interface OnGetInfoListener<T>{
+        void onInfoGet(T info,HttpInfo httpInfo);
         void onFailed(String requestUrl,HttpInfo info);
     }
 
@@ -53,6 +53,25 @@ public class MyHttpUtils {
         }else{
             listener.onOkHttpInit();
         }
+    }
+
+    /**
+     * 消息接收以后执行
+     * @param info
+     * @param httpInfo
+     * @param <T>
+     */
+    public<T> void onServerInfoGet(T info,HttpInfo httpInfo){
+
+    }
+
+
+    /**
+     * 消息发送以前执行
+     * @param requestUrl
+     */
+    public void beforeMsgSend(String requestUrl) {
+
     }
 
     public interface OnOkHttpInitListener{
@@ -192,7 +211,8 @@ public class MyHttpUtils {
         return builder;
     }
 
-    public void sendMsgGet(final String requestUrl,JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public <T>void sendMsgGet(final String requestUrl,JsonObject object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -210,9 +230,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -227,7 +256,10 @@ public class MyHttpUtils {
     }
 
 
-    public void sendMsgGet(final String requestUrl, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
+
+
+    public <T>void sendMsgGet(final String requestUrl, HashMap<String,String> object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -242,9 +274,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -258,7 +299,8 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgGet(final String requestUrl, List<HeaderParam> params, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public <T>void sendMsgGet(final String requestUrl, List<HeaderParam> params, HashMap<String,String> object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -273,9 +315,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -289,7 +340,8 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgGet(final String requestUrl, List<HeaderParam> params, JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public<T> void sendMsgGet(final String requestUrl, List<HeaderParam> params, JsonObject object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -304,9 +356,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -320,7 +381,8 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgGet(String requestUrl, HashMap<String,String> object,Callback callback){
+    public<T> void sendMsgGet(String requestUrl, HashMap<String,String> object,Callback callback){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -334,6 +396,7 @@ public class MyHttpUtils {
     }
 
     public void sendMsgGet(String requestUrl,List<HeaderParam> params, HashMap<String,String> object,Callback callback){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -347,7 +410,8 @@ public class MyHttpUtils {
     }
 
 
-    public void sendMsgPost(final String requestUrl, JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public<T> void sendMsgPost(final String requestUrl, JsonObject object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -362,9 +426,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -378,7 +451,8 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgPost(final String requestUrl,List<HeaderParam> params ,JsonObject object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public<T> void sendMsgPost(final String requestUrl,List<HeaderParam> params ,JsonObject object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -393,9 +467,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -411,7 +494,8 @@ public class MyHttpUtils {
 
 
     //"Content-Type","application/json"
-    public void sendMsgPost(final String requestUrl, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public<T> void sendMsgPost(final String requestUrl, HashMap<String,String> object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -426,9 +510,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -442,7 +535,8 @@ public class MyHttpUtils {
                 });
     }
 
-    public void sendMsgPost(final String requestUrl, List<HeaderParam> params, HashMap<String,String> object, final Class x, final OnGetInfoListener onGetInfoListener){
+    public<T> void sendMsgPost(final String requestUrl, List<HeaderParam> params, HashMap<String,String> object, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -457,9 +551,18 @@ public class MyHttpUtils {
                     public void onSuccess(HttpInfo info) throws IOException {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -474,6 +577,7 @@ public class MyHttpUtils {
     }
 
     public void sendMsgPost(String requestUrl, HashMap<String,String> object,Callback callback){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -488,6 +592,7 @@ public class MyHttpUtils {
 
 
     public void sendMsgPost(String requestUrl,List<HeaderParam> params, HashMap<String,String> object,Callback callback){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -503,7 +608,8 @@ public class MyHttpUtils {
     /**
      * 异步上传单个文件：显示上传进度
      */
-    public void doUploadSingleFile(final String requestUrl, String fileName, File file, final Class x, final OnGetInfoListener onGetInfoListener) {
+    public<T> void doUploadSingleFile(final String requestUrl, String fileName, File file, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -519,9 +625,18 @@ public class MyHttpUtils {
                     public void onResponseMain(String filePath, HttpInfo info) {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -539,7 +654,8 @@ public class MyHttpUtils {
     /**
      * 异步上传单个文件：显示上传进度
      */
-    public void doUploadSingleFile(final String requestUrl, List<HeaderParam> params, String fileName, File file, final Class x, final OnGetInfoListener onGetInfoListener) {
+    public<T> void doUploadSingleFile(final String requestUrl, List<HeaderParam> params, String fileName, File file, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -555,9 +671,18 @@ public class MyHttpUtils {
                     public void onResponseMain(String filePath, HttpInfo info) {
                         String data=info.getRetDetail();
                         initSucessLog(info,true);
-                        Object obj= mGson.fromJson(data,x);
-                        if(onGetInfoListener!=null){
-                            onGetInfoListener.onInfoGet(requestUrl,obj);
+                        try {
+                            T obj= (T) mGson.fromJson(data,x);
+                            onServerInfoGet(obj,info);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onInfoGet(obj,info);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            initSucessLog(info,false);
+                            if(onGetInfoListener!=null){
+                                onGetInfoListener.onFailed(requestUrl,info);
+                            }
                         }
                     }
 
@@ -579,6 +704,7 @@ public class MyHttpUtils {
      * 异步上传图片：显示上传进度
      */
     public void doUploadSingleFile(String requestUrl,String fileName,File file,ProgressCallback callback) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -597,6 +723,7 @@ public class MyHttpUtils {
      * 异步上传图片：显示上传进度
      */
     public void doUploadSingleFile(String requestUrl,List<HeaderParam> params,String fileName,File file,ProgressCallback callback) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -620,7 +747,8 @@ public class MyHttpUtils {
     /**
      * 异步上传多个文件：显示上传进度
      */
-    public void doUploadMuiltFiles(final String requestUrl, FileListParams fileListParams, final Class x, final OnGetInfoListener onGetInfoListener) {
+    public<T> void doUploadMuiltFiles(final String requestUrl, FileListParams fileListParams, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -639,9 +767,18 @@ public class MyHttpUtils {
             public void onResponseMain(String filePath, HttpInfo info) {
                 String data=info.getRetDetail();
                 initSucessLog(info,true);
-                Object obj= mGson.fromJson(data,x);
-                if(onGetInfoListener!=null){
-                    onGetInfoListener.onInfoGet(requestUrl,obj);
+                try {
+                    T obj= (T) mGson.fromJson(data,x);
+                    onServerInfoGet(obj,info);
+                    if(onGetInfoListener!=null){
+                        onGetInfoListener.onInfoGet(obj,info);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    initSucessLog(info,false);
+                    if(onGetInfoListener!=null){
+                        onGetInfoListener.onFailed(requestUrl,info);
+                    }
                 }
             }
 
@@ -656,7 +793,8 @@ public class MyHttpUtils {
     /**
      * 异步上传多个文件：显示上传进度
      */
-    public void doUploadMuiltFiles(final String requestUrl, List<HeaderParam> params, FileListParams fileListParams, final Class x, final OnGetInfoListener onGetInfoListener) {
+    public<T> void doUploadMuiltFiles(final String requestUrl, List<HeaderParam> params, FileListParams fileListParams, final Class<T> x, final OnGetInfoListener<T> onGetInfoListener) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -680,9 +818,18 @@ public class MyHttpUtils {
             public void onResponseMain(String filePath, HttpInfo info) {
                 String data=info.getRetDetail();
                 initSucessLog(info,true);
-                Object obj= mGson.fromJson(data,x);
-                if(onGetInfoListener!=null){
-                    onGetInfoListener.onInfoGet(requestUrl,obj);
+                try {
+                    T obj= (T) mGson.fromJson(data,x);
+                    onServerInfoGet(obj,info);
+                    if(onGetInfoListener!=null){
+                        onGetInfoListener.onInfoGet(obj,info);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    initSucessLog(info,false);
+                    if(onGetInfoListener!=null){
+                        onGetInfoListener.onFailed(requestUrl,info);
+                    }
                 }
             }
 
@@ -700,6 +847,7 @@ public class MyHttpUtils {
      * 异步上传多个文件：显示上传进度
      */
     public void doUploadMuiltFiles(String requestUrl,FileListParams fileListParams, ProgressCallback callback) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -719,6 +867,7 @@ public class MyHttpUtils {
      * 异步上传多个文件：显示上传进度
      */
     public void doUploadMuiltFiles(String requestUrl,List<HeaderParam> params,FileListParams fileListParams, ProgressCallback callback) {
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -741,6 +890,7 @@ public class MyHttpUtils {
 
 
     public DownloadFileInfo download(String requestUrl, String saveFileName){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -772,6 +922,7 @@ public class MyHttpUtils {
 
 
     private DownloadFileInfo download(String requestUrl,List<HeaderParam> params, String saveFileName){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -810,6 +961,7 @@ public class MyHttpUtils {
 
 
     public DownloadFileInfo download(String requestUrl, String saveFileName, ProgressCallback callback){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
@@ -824,6 +976,7 @@ public class MyHttpUtils {
     }
 
     public DownloadFileInfo download(String requestUrl,List<HeaderParam> params, String saveFileName, ProgressCallback callback){
+        beforeMsgSend(requestUrl);
         if(!NetUtils.isNetworkConnected(context)){
             if(noNetRequestListener!=null){
                 noNetRequestListener.onNoNet(requestUrl);
