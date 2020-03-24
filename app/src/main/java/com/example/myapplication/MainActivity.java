@@ -3,18 +3,15 @@ package com.example.myapplication;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.google.gson.JsonObject;
-import com.okhttplib.HttpInfo;
-import com.okhttplib.callback.Callback;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-import yin.deng.dyrequestutils.http.BaseHttpInfo;
-import yin.deng.dyrequestutils.http.HeaderParam;
+import okhttp3.Headers;
 import yin.deng.dyrequestutils.http.LogUtils;
 import yin.deng.dyrequestutils.http.MyHttpUtils;
+import yin.deng.dyrequestutils.okhttplib.HttpInfo;
+import yin.deng.dyrequestutils.okhttplib.callback.Callback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,10 +20,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MyHttpUtils httpUtils=new MyHttpUtils(getApplication());
-        httpUtils.sendMsgGet("url", new JsonObject(), new Callback() {
+        httpUtils.sendMsgGet("https://pan.lanzou.com/i0ltl2d", new HashMap<String, String>(), new Callback() {
             @Override
             public void onSuccess(HttpInfo info) throws IOException {
-
+               Headers headers=info.getResponseHeaders();
             }
 
             @Override

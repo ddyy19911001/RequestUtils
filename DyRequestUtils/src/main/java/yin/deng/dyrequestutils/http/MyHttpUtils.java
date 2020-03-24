@@ -7,17 +7,6 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.okhttplib.HttpInfo;
-import com.okhttplib.OkHttpUtil;
-import com.okhttplib.annotation.CacheType;
-import com.okhttplib.annotation.DownloadStatus;
-import com.okhttplib.annotation.Encoding;
-import com.okhttplib.bean.DownloadFileInfo;
-import com.okhttplib.callback.Callback;
-import com.okhttplib.callback.ProgressCallback;
-import com.okhttplib.cookie.PersistentCookieJar;
-import com.okhttplib.cookie.cache.SetCookieCache;
-import com.okhttplib.cookie.persistence.SharedPrefsCookiePersistor;
 
 
 import java.io.File;
@@ -27,6 +16,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import yin.deng.dyrequestutils.okhttplib.HttpInfo;
+import yin.deng.dyrequestutils.okhttplib.OkHttpUtil;
+import yin.deng.dyrequestutils.okhttplib.annotation.CacheType;
+import yin.deng.dyrequestutils.okhttplib.annotation.DownloadStatus;
+import yin.deng.dyrequestutils.okhttplib.annotation.Encoding;
+import yin.deng.dyrequestutils.okhttplib.bean.DownloadFileInfo;
+import yin.deng.dyrequestutils.okhttplib.callback.Callback;
+import yin.deng.dyrequestutils.okhttplib.callback.ProgressCallback;
+import yin.deng.dyrequestutils.okhttplib.cookie.PersistentCookieJar;
+import yin.deng.dyrequestutils.okhttplib.cookie.cache.SetCookieCache;
+import yin.deng.dyrequestutils.okhttplib.cookie.persistence.SharedPrefsCookiePersistor;
 
 
 public class MyHttpUtils {
@@ -41,7 +42,7 @@ public class MyHttpUtils {
         void onNoNet(String requestUrl);
     }
     public interface OnGetInfoListener<T>{
-        void onInfoGet(T info,HttpInfo httpInfo);
+        void onInfoGet(T info, HttpInfo httpInfo);
         void onFailed(String requestUrl,HttpInfo info);
     }
 

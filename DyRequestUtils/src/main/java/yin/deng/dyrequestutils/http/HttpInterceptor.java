@@ -1,8 +1,9 @@
 package yin.deng.dyrequestutils.http;
 
-import com.okhttplib.HttpInfo;
-import com.okhttplib.interceptor.ExceptionInterceptor;
-import com.okhttplib.interceptor.ResultInterceptor;
+
+import yin.deng.dyrequestutils.okhttplib.HttpInfo;
+import yin.deng.dyrequestutils.okhttplib.interceptor.ExceptionInterceptor;
+import yin.deng.dyrequestutils.okhttplib.interceptor.ResultInterceptor;
 
 /**
  * 网络请求拦截器
@@ -12,7 +13,7 @@ public class HttpInterceptor {
      * 请求结果统一预处理拦截器
      * 该拦截器会对所有网络请求返回结果进行预处理并修改
      */
-    public static com.okhttplib.interceptor.ResultInterceptor ResultInterceptor = new ResultInterceptor() {
+    public static yin.deng.dyrequestutils.okhttplib.interceptor.ResultInterceptor ResultInterceptor = new ResultInterceptor() {
         @Override
         public HttpInfo intercept(HttpInfo info) throws Exception {
             //请求结果预处理：可以进行GSon过滤与解析
@@ -24,7 +25,7 @@ public class HttpInterceptor {
      * 请求链路异常信息拦截器
      * 该拦截器会发送网络请求时链路异常信息进行拦截处理
      */
-    public static com.okhttplib.interceptor.ExceptionInterceptor ExceptionInterceptor = new ExceptionInterceptor() {
+    public static ExceptionInterceptor ExceptionInterceptor = new ExceptionInterceptor() {
         @Override
         public HttpInfo intercept(HttpInfo info) throws Exception {
             switch (info.getRetCode()){
